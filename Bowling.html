@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Bowling Progress Tracker</title>
+    <!-- Chart.js CDN for rendering the progress charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #1b4332; /* Deep cricket green */
+            --spot-color: #2a9d8f;    /* Teal for spot bowling */
+            --wicket-color: #e76f51;  /* Coral for single wicket */
+            --border-color: #dddddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #666;
+            margin-top: 0;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 10px;
+        }
+
+        .spot-title { color: var(--spot-color); }
+        .wicket-title { color: var(--wicket-color); }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .badge-spot { background-color: rgba(42, 157, 143, 0.1); color: var(--spot-color); }
+        .badge-wicket { background-color: rgba(231, 111, 81, 0.1); color: var(--wicket-color); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Visual Charts Row -->
+    <div class="charts-grid">
+        <div class="card">
+            <h2 class="spot-title">Spot Good Length Accuracy (%)</h2>
+            <canvas id="spotChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="wicket-title">Single Wicket Accuracy (%)</h2>
+            <canvas id="wicketChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Data Log Table -->
+    <div class="card">
+        <h2>Historical Log</h2>
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Spot Good Length Accuracy</th>
+                        <th>Single Wicket Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JavaScript will automatically build rows here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // DATA ENTRY SECTION
+    // Type your calculated percentage results here daily.
+    // Format: { spot: PercentageValue, wicket: PercentageValue }
+    // ==========================================
+    const bowlingData = [
+        { spot: 50, wicket: 40 },  // Session 1
+        { spot: 60, wicket: 45 },  // Session 2
+        { spot: 55, wicket: 55 },  // Session 3
+        { spot: 70, wicket: 50 },  // Session 4
+        { spot: 65, wicket: 60 },  // Session 5
+        { spot: 75, wicket: 70 },  // Session 6
+        { spot: 80, wicket: 65 },  // Session 7
+        // Keep adding raw numeric percentages down here for your 50+ entries
+    ];
+
+    // Process arrays for chart mapping and auto-generate labels
+    const labels = bowlingData.map((_, index) => `Session ${index + 1}`);
+    const spotPercentages = bowlingData.map(d => d.spot);
+    const wicketPercentages = bowlingData.map(d => d.wicket);
+
+    // Populate Data Log Table dynamically
+    const tableBody = document.querySelector("#dataTable tbody");
+    bowlingData.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>Session ${index + 1}</td>
+            <td><span class="badge badge-spot">${row.spot}%</span></td>
+            <td><span class="badge badge-wicket">${row.wicket}%</span></td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    // Chart Configuration Helper
+    function createChart(canvasId, label, dataPoints, color) {
+        return new Chart(document.getElementById(canvasId), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: dataPoints,
+                    borderColor: color,
+                    backgroundColor: color + '1A', // transparent fill
+                    borderWidth: 3,
+                    tension: 0.2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Percentage (%)' }
+                    }
+                }
+            }
+        });
+    }
+
+    // Render both charts
+    createChart('spotChart', 'Spot Bowling Good Length', spotPercentages, '#2a9d8f');
+    createChart('wicketChart', 'Single Wicket', wicketPercentages, '#e76f51');
+</script>
+
+</body>
+</html>
