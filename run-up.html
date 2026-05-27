@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Bowling Progress Tracker</title>
+    <!-- Chart.js CDN for rendering the progress charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #1b4332; /* Deep cricket green */
+            --spot-color: #2a9d8f;    /* Teal for spot bowling */
+            --wicket-color: #e76f51;  /* Coral for single wicket */
+            --bouncer-color: #8338ec; /* Royal violet for bouncer length */
+            --slow-color: #f4a261;    /* Sandy gold for slow length */
+            --border-color: #dddddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #666;
+            margin-top: 0;
+        }
+
+        /* Filter Controls Styling */
+        .controls-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .controls-container label {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        .filter-select {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: border-color 0.2s;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Responsive Charts Grid containing all 4 metric charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 10px;
+        }
+
+        /* Color headers specifically to match metrics */
+        .spot-title { color: var(--spot-color); }
+        .wicket-title { color: var(--wicket-color); }
+        .bouncer-title { color: var(--bouncer-color); }
+        .slow-title { color: var(--slow-color); }
+
+        /* Scrollable Data Table Container */
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Color Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .badge-spot { background-color: rgba(42, 157, 143, 0.1); color: var(--spot-color); }
+        .badge-wicket { background-color: rgba(231, 111, 81, 0.1); color: var(--wicket-color); }
+        .badge-bouncer { background-color: rgba(131, 56, 236, 0.1); color: var(--bouncer-color); }
+        .badge-slow { background-color: rgba(244, 162, 97, 0.1); color: var(--slow-color); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>With Full Run Up</h1>
+    </header>
+
+    <!-- Dashboard Range Filter -->
+    <div class="controls-container">
+        <label for="chartFilter">Filter Chart View:</label>
+        <select id="chartFilter" class="filter-select" onchange="updateDashboard()">
+            <option value="10">Last 10 Sessions</option>
+            <option value="25" selected>Last 25 Sessions</option>
+            <option value="50">Last 50 Sessions</option>
+            <option value="all">All Sessions</option>
+        </select>
+    </div>
+
+    <!-- Visual Charts Grid (Now displays 4 distinct charts) -->
+    <div class="charts-grid">
+        <div class="card">
+            <h2 class="spot-title">Length Accuracy (%)</h2>
+            <canvas id="spotChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="wicket-title">Yoker Accuracy (%)</h2>
+            <canvas id="wicketChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="bouncer-title">Bouncer Accuracy (%)</h2>
+            <canvas id="bouncerChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="slow-title">Off Cutter Accuracy (%)</h2>
+            <canvas id="slowChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Data Log Table -->
+    <div class="card">
+        <h2>FEET BY FEET S (100)</h2>
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Length 3 - 5 Step Accuracy</th>
+                        <th>Yoker Accuracy</th>
+                        <th>Bouncer Accuracy</th>
+                        <th>Slow Length Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JavaScript will automatically build rows here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // DATA ENTRY SECTION
+    // Containing exactly 100 fully filled sessions (simulating progressive training improvements)
+    // =========================================================================
+    const bowlingData = [
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 1
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 2
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 3
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 4
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 5
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 6
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 7
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 8
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 9
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 10
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 },  // Session 11
+        { spot: 0, wicket: 0, bouncer: 0, slow: 0 }   // Session 11
+    ];
+
+    // Chart references stored globally so we can update them on filter change
+    let charts = {};
+
+    function buildTable() {
+        const tableBody = document.querySelector("#dataTable tbody");
+        tableBody.innerHTML = ""; // Clear existing rows
+        
+        // Reverse array for table so newest sessions appear at the top
+        const displayData = [...bowlingData].reverse();
+        
+        displayData.forEach((row, index) => {
+            const actualSessionNumber = bowlingData.length - index;
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>Session ${actualSessionNumber}</td>
+                <td><span class="badge badge-spot">${row.spot}%</span></td>
+                <td><span class="badge badge-wicket">${row.wicket}%</span></td>
+                <td><span class="badge badge-bouncer">${row.bouncer}%</span></td>
+                <td><span class="badge badge-slow">${row.slow}%</span></td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function updateDashboard() {
+        const filterValue = document.getElementById("chartFilter").value;
+        let visibleData = [...bowlingData];
+
+        // Slice data if a specific limit is selected
+        if (filterValue !== "all") {
+            const limit = parseInt(filterValue, 10);
+            if (bowlingData.length > limit) {
+                visibleData = bowlingData.slice(-limit);
+            }
+        }
+
+        // Generate Labels and Data series for the selected scope
+        const chartLabels = visibleData.map((_, index) => {
+            const actualIndex = bowlingData.length - visibleData.length + index + 1;
+            return `S${actualIndex}`;
+        });
+        
+        const spotData = visibleData.map(d => d.spot);
+        const wicketData = visibleData.map(d => d.wicket);
+        const bouncerData = visibleData.map(d => d.bouncer);
+        const slowData = visibleData.map(d => d.slow);
+
+        // Render or Update the charts
+        renderOrUpdateChart('spotChart', 'Spot Bowling Good Length', chartLabels, spotData, '#2a9d8f');
+        renderOrUpdateChart('wicketChart', 'Single Wicket', chartLabels, wicketData, '#e76f51');
+        renderOrUpdateChart('bouncerChart', 'Bouncer Accuracy', chartLabels, bouncerData, '#8338ec');
+        renderOrUpdateChart('slowChart', 'Slow Length Accuracy', chartLabels, slowData, '#f4a261');
+    }
+
+    function renderOrUpdateChart(canvasId, label, labels, dataPoints, color) {
+        if (charts[canvasId]) {
+            // If chart exists, update data dynamically
+            charts[canvasId].data.labels = labels;
+            charts[canvasId].data.datasets[0].data = dataPoints;
+            charts[canvasId].update();
+        } else {
+            // Otherwise, create new chart
+            charts[canvasId] = new Chart(document.getElementById(canvasId), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: dataPoints,
+                        borderColor: color,
+                        backgroundColor: color + '1A', // transparent fill
+                        borderWidth: 3,
+                        tension: 0.2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: 'Percentage (%)' }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 15 // Keeps x-axis clean even with lots of points
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // Initialize application
+    buildTable();
+    updateDashboard();
+</script>
+
+</body>
+</html>
