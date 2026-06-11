@@ -182,11 +182,11 @@
     <!-- Visual Charts Grid (Displays 2 distinct charts for 1. Length Spot & 2. Single Stump) -->
     <div class="charts-grid">
         <div class="card">
-            <h2 class="spot-title">1. Length Spot Accuracy (%)</h2>
+            <h2 class="spot-title">1. Length Accuracy (%)</h2>
             <canvas id="spotChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="wicket-title">2. Single Stump Accuracy (%)</h2>
+            <h2 class="wicket-title">2. Off Accuracy (%)</h2>
             <canvas id="wicketChart"></canvas>
         </div>
     </div>
@@ -199,8 +199,8 @@
                 <thead>
                     <tr>
                         <th>Session</th>
-                        <th>Length Spot Accuracy</th>
-                        <th>Single Stump Accuracy</th>
+                        <th>Length Accuracy</th>
+                        <th>Off Accuracy</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -218,7 +218,7 @@
     // Leave uncompleted sessions as 'null' so they don't show up on your dashboard.
     // =========================================================================
     const bowlingData = [
-        { spot: 0, wicket: 0 },  // Session 1
+        { spot: 0, wicket: 46 },  // Session 1
         { spot: 0, wicket: 0 },  // Session 2
         { spot: 0, wicket: 0 },  // Session 3
         { spot: 0, wicket: 0 },  // Session 4
