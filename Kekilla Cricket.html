@@ -14,14 +14,14 @@
             --text-color: #333333;
             --primary-color: #1b4332; /* Deep cricket green */
             
-            /* Colors for the 7 variations in the updated requested order */
-            --straight-color: #2a9d8f;          /* Teal */
-            --lengthspot-color: #4361ee;        /* Royal Blue */
-            --slowballwideyorker-color: #e76f51; /* Coral (replaces offcutter) */
-            --wideyorker-color: #f4a261;        /* Sandy Gold */
-            --yorker-color: #e63946;            /* Crimson Red */
-            --bouncer-color: #457b9d;           /* Steel Blue */
-            --slowballyorker-color: #8338ec;     /* Royal Violet (replaces legcutter) */
+            /* Colors for the 7 new variations in requested order */
+            --wideyorker-color: #2a9d8f;             /* Teal */
+            --widelength-color: #4361ee;             /* Royal Blue */
+            --widelengthoffcutter-color: #e76f51;    /* Coral */
+            --yoker-color: #f4a261;                  /* Sandy Gold */
+            --length-color: #e63946;                 /* Crimson Red */
+            --lengthoffcutter-color: #457b9d;        /* Steel Blue */
+            --legcutterslow-color: #8338ec;          /* Royal Violet */
             
             --border-color: #dddddd;
         }
@@ -116,14 +116,14 @@
             padding-bottom: 10px;
         }
 
-        /* Color headers specifically to match metrics with slow ball yorker at last */
-        .straight-title { color: var(--straight-color); }
-        .lengthspot-title { color: var(--lengthspot-color); }
-        .slowballwideyorker-title { color: var(--slowballwideyorker-color); }
+        /* Color headers specifically to match metrics with leg cutter slow at last */
         .wideyorker-title { color: var(--wideyorker-color); }
-        .yorker-title { color: var(--yorker-color); }
-        .bouncer-title { color: var(--bouncer-color); }
-        .slowballyorker-title { color: var(--slowballyorker-color); }
+        .widelength-title { color: var(--widelength-color); }
+        .widelengthoffcutter-title { color: var(--widelengthoffcutter-color); }
+        .yoker-title { color: var(--yoker-color); }
+        .length-title { color: var(--length-color); }
+        .lengthoffcutter-title { color: var(--lengthoffcutter-color); }
+        .legcutterslow-title { color: var(--legcutterslow-color); }
 
         /* Scrollable Data Table Container */
         .table-container {
@@ -169,13 +169,13 @@
             font-weight: bold;
             font-size: 0.85rem;
         }
-        .badge-straight { background-color: rgba(42, 157, 143, 0.1); color: var(--straight-color); }
-        .badge-lengthspot { background-color: rgba(67, 97, 238, 0.1); color: var(--lengthspot-color); }
-        .badge-slowballwideyorker { background-color: rgba(231, 111, 81, 0.1); color: var(--slowballwideyorker-color); }
-        .badge-wideyorker { background-color: rgba(244, 162, 97, 0.1); color: var(--wideyorker-color); }
-        .badge-yorker { background-color: rgba(230, 57, 70, 0.1); color: var(--yorker-color); }
-        .badge-bouncer { background-color: rgba(69, 123, 157, 0.1); color: var(--bouncer-color); }
-        .badge-slowballyorker { background-color: rgba(131, 56, 236, 0.1); color: var(--slowballyorker-color); }
+        .badge-wideyorker { background-color: rgba(42, 157, 143, 0.1); color: var(--wideyorker-color); }
+        .badge-widelength { background-color: rgba(67, 97, 238, 0.1); color: var(--widelength-color); }
+        .badge-widelengthoffcutter { background-color: rgba(231, 111, 81, 0.1); color: var(--widelengthoffcutter-color); }
+        .badge-yoker { background-color: rgba(244, 162, 97, 0.1); color: var(--yoker-color); }
+        .badge-length { background-color: rgba(230, 57, 70, 0.1); color: var(--length-color); }
+        .badge-lengthoffcutter { background-color: rgba(69, 123, 157, 0.1); color: var(--lengthoffcutter-color); }
+        .badge-legcutterslow { background-color: rgba(131, 56, 236, 0.1); color: var(--legcutterslow-color); }
     </style>
 </head>
 <body>
@@ -197,35 +197,35 @@
         </select>
     </div>
 
-    <!-- Visual Charts Grid (Displays 7 distinct charts - Ordered: Straight, Length Spot, Slow Ball Wide Yorker, Wide Yorker, Yorker, Bouncer, Slow Ball Yorker) -->
+    <!-- Visual Charts Grid (Displays 7 distinct charts - Ordered per new list) -->
     <div class="charts-grid">
-        <div class="card">
-            <h2 class="straight-title">Straight Accuracy (%)</h2>
-            <canvas id="straightChart"></canvas>
-        </div>
-        <div class="card">
-            <h2 class="lengthspot-title">Length Spot Accuracy (%)</h2>
-            <canvas id="lengthspotChart"></canvas>
-        </div>
-        <div class="card">
-            <h2 class="slowballwideyorker-title">Slow Wide Yorker Accuracy (%)</h2>
-            <canvas id="slowballwideyorkerChart"></canvas>
-        </div>
         <div class="card">
             <h2 class="wideyorker-title">Wide Yorker Accuracy (%)</h2>
             <canvas id="wideyorkerChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="yorker-title">Yorker Accuracy (%)</h2>
-            <canvas id="yorkerChart"></canvas>
+            <h2 class="widelength-title">Wide Length Accuracy (%)</h2>
+            <canvas id="widelengthChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="bouncer-title">Bouncer Accuracy (%)</h2>
-            <canvas id="bouncerChart"></canvas>
+            <h2 class="widelengthoffcutter-title">Wide Length Off Cutter Accuracy (%)</h2>
+            <canvas id="widelengthoffcutterChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="slowballyorker-title">Slow Yorker Accuracy (%)</h2>
-            <canvas id="slowballyorkerChart"></canvas>
+            <h2 class="yoker-title">Yoker Accuracy (%)</h2>
+            <canvas id="yokerChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="length-title">Length Accuracy (%)</h2>
+            <canvas id="lengthChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="lengthoffcutter-title">Length Off Cutter Accuracy (%)</h2>
+            <canvas id="lengthoffcutterChart"></canvas>
+        </div>
+        <div class="card">
+            <h2 class="legcutterslow-title">Leg Cutter (Slow) Accuracy (%)</h2>
+            <canvas id="legcutterslowChart"></canvas>
         </div>
     </div>
 
@@ -237,13 +237,13 @@
                 <thead>
                     <tr>
                         <th>Session</th>
-                        <th>Straight (OPNE/OFF)</th>
-                        <th>Length Spot</th>
-                        <th>Slow Ball Wide Yorker</th>
                         <th>Wide Yorker</th>
-                        <th>Yorker</th>
-                        <th>Bouncer</th>
-                        <th>Slow Ball Yorker</th>
+                        <th>Wide Length</th>
+                        <th>Wide Length Off Cutter</th>
+                        <th>Yoker</th>
+                        <th>Length</th>
+                        <th>Length Off Cutter</th>
+                        <th>Leg Cutter (Slow)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -260,17 +260,17 @@
     // Containing exactly 11 fully filled template sessions (Expandable to 100)
     // =========================================================================
     const bowlingData = [
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 1
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 2
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 3
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 4
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 5
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 6
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 7
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 8
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 9
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 },  // Session 10
-        { straight: 0, lengthspot: 0, slowballwideyorker: 0, wideyorker: 0, yorker: 0, bouncer: 0, slowballyorker: 0 }   // Session 11
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 1
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 2
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 3
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 4
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 5
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 6
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 7
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 8
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 9
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 },  // Session 10
+        { wideyorker: 0, widelength: 0, widelengthoffcutter: 0, yoker: 0, length: 0, lengthoffcutter: 0, legcutterslow: 0 }   // Session 11
     ];
 
     // Chart references stored globally so we can update them on filter change
@@ -288,13 +288,13 @@
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>Session ${actualSessionNumber}</td>
-                <td><span class="badge badge-straight">${row.straight}%</span></td>
-                <td><span class="badge badge-lengthspot">${row.lengthspot}%</span></td>
-                <td><span class="badge badge-slowballwideyorker">${row.slowballwideyorker}%</span></td>
                 <td><span class="badge badge-wideyorker">${row.wideyorker}%</span></td>
-                <td><span class="badge badge-yorker">${row.yorker}%</span></td>
-                <td><span class="badge badge-bouncer">${row.bouncer}%</span></td>
-                <td><span class="badge badge-slowballyorker">${row.slowballyorker}%</span></td>
+                <td><span class="badge badge-widelength">${row.widelength}%</span></td>
+                <td><span class="badge badge-widelengthoffcutter">${row.widelengthoffcutter}%</span></td>
+                <td><span class="badge badge-yoker">${row.yoker}%</span></td>
+                <td><span class="badge badge-length">${row.length}%</span></td>
+                <td><span class="badge badge-lengthoffcutter">${row.lengthoffcutter}%</span></td>
+                <td><span class="badge badge-legcutterslow">${row.legcutterslow}%</span></td>
             `;
             tableBody.appendChild(tr);
         });
@@ -318,22 +318,22 @@
             return `S${actualIndex}`;
         });
         
-        const straightData = visibleData.map(d => d.straight);
-        const lengthspotData = visibleData.map(d => d.lengthspot);
-        const slowballwideyorkerData = visibleData.map(d => d.slowballwideyorker);
         const wideyorkerData = visibleData.map(d => d.wideyorker);
-        const yorkerData = visibleData.map(d => d.yorker);
-        const bouncerData = visibleData.map(d => d.bouncer);
-        const slowballyorkerData = visibleData.map(d => d.slowballyorker);
+        const widelengthData = visibleData.map(d => d.widelength);
+        const widelengthoffcutterData = visibleData.map(d => d.widelengthoffcutter);
+        const yokerData = visibleData.map(d => d.yoker);
+        const lengthData = visibleData.map(d => d.length);
+        const lengthoffcutterData = visibleData.map(d => d.lengthoffcutter);
+        const legcutterslowData = visibleData.map(d => d.legcutterslow);
 
         // Render or Update the 7 charts in correct structured order
-        renderOrUpdateChart('straightChart', 'Straight (Off Length)', chartLabels, straightData, '#2a9d8f');
-        renderOrUpdateChart('lengthspotChart', 'Length Spot', chartLabels, lengthspotData, '#4361ee');
-        renderOrUpdateChart('slowballwideyorkerChart', 'Slow Ball Wide Yorker (Off Length)', chartLabels, slowballwideyorkerData, '#e76f51');
-        renderOrUpdateChart('wideyorkerChart', 'Wide Yorker', chartLabels, wideyorkerData, '#f4a261');
-        renderOrUpdateChart('yorkerChart', 'Yorker', chartLabels, yorkerData, '#e63946');
-        renderOrUpdateChart('bouncerChart', 'Bouncer (Open)', chartLabels, bouncerData, '#457b9d');
-        renderOrUpdateChart('slowballyorkerChart', 'Slow Ball Yorker (Open Length)', chartLabels, slowballyorkerData, '#8338ec');
+        renderOrUpdateChart('wideyorkerChart', 'Wide Yorker', chartLabels, wideyorkerData, '#2a9d8f');
+        renderOrUpdateChart('widelengthChart', 'Wide Length', chartLabels, widelengthData, '#4361ee');
+        renderOrUpdateChart('widelengthoffcutterChart', 'Wide Length Off Cutter', chartLabels, widelengthoffcutterData, '#e76f51');
+        renderOrUpdateChart('yokerChart', 'Yoker', chartLabels, yokerData, '#f4a261');
+        renderOrUpdateChart('lengthChart', 'Length', chartLabels, lengthData, '#e63946');
+        renderOrUpdateChart('lengthoffcutterChart', 'Length Off Cutter', chartLabels, lengthoffcutterData, '#457b9d');
+        renderOrUpdateChart('legcutterslowChart', 'Leg Cutter (Slow)', chartLabels, legcutterslowData, '#8338ec');
     }
 
     function renderOrUpdateChart(canvasId, label, labels, dataPoints, color) {
