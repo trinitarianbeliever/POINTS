@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kekilla Cricket</title>
+    <title>SOFT BALL FAST BOWLING</title>
     <!-- Chart.js CDN for rendering the progress charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -14,13 +14,11 @@
             --text-color: #333333;
             --primary-color: #1b4332; /* Deep cricket green */
             
-            /* Colors for the 6 new variations */
-            --straightline-color: #2a9d8f;          /* Teal */
-            --lengthspot-color: #4361ee;            /* Royal Blue */
-            --yokerspot-color: #f4a261;             /* Sandy Gold */
-            --wideyokerspot-color: #e76f51;         /* Coral */
-            --outswing-color: #e63946;              /* Crimson Red */
-            --legcutter-color: #8338ec;             /* Royal Violet */
+            /* Colors for the 4 core drill variations */
+            --length-color: #2a9d8f;          /* Teal */
+            --lengthoff-color: #4361ee;       /* Royal Blue */
+            --wideyoker-color: #e76f51;       /* Coral */
+            --yoker-color: #f4a261;           /* Sandy Gold */
             
             --border-color: #dddddd;
         }
@@ -46,6 +44,8 @@
         header h1 {
             color: var(--primary-color);
             margin-bottom: 5px;
+            font-size: 2.2rem;
+            font-weight: 700;
         }
 
         header p {
@@ -79,17 +79,18 @@
             cursor: pointer;
             outline: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .filter-select:focus {
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
         }
 
-        /* Responsive Charts Grid containing all 6 metric charts */
+        /* Responsive Charts Grid containing 4 metric charts */
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -102,33 +103,39 @@
 
         .card {
             background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            padding: 22px;
             border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         }
 
         .card h2 {
             margin-top: 0;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
+            font-weight: 600;
         }
 
         /* Color headers specifically to match metrics */
-        .straightline-title { color: var(--straightline-color); }
-        .lengthspot-title { color: var(--lengthspot-color); }
-        .yokerspot-title { color: var(--yokerspot-color); }
-        .wideyokerspot-title { color: var(--wideyokerspot-color); }
-        .outswing-title { color: var(--outswing-color); }
-        .legcutter-title { color: var(--legcutter-color); }
+        .length-title { color: var(--length-color); }
+        .lengthoff-title { color: var(--lengthoff-color); }
+        .wideyoker-title { color: var(--wideyoker-color); }
+        .yoker-title { color: var(--yoker-color); }
 
         /* Scrollable Data Table Container */
         .table-container {
             max-height: 500px;
             overflow-y: auto;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         table {
@@ -138,7 +145,7 @@
         }
 
         th, td {
-            padding: 12px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.9rem;
         }
@@ -149,14 +156,15 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            font-weight: 600;
         }
 
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #fcfdfe;
         }
 
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f1f5f3;
         }
 
         /* Color Badges */
@@ -166,13 +174,13 @@
             border-radius: 12px;
             font-weight: bold;
             font-size: 0.85rem;
+            text-align: center;
+            min-width: 50px;
         }
-        .badge-straightline { background-color: rgba(42, 157, 143, 0.1); color: var(--straightline-color); }
-        .badge-lengthspot { background-color: rgba(67, 97, 238, 0.1); color: var(--lengthspot-color); }
-        .badge-yokerspot { background-color: rgba(244, 162, 97, 0.1); color: var(--yokerspot-color); }
-        .badge-wideyokerspot { background-color: rgba(231, 111, 81, 0.1); color: var(--wideyokerspot-color); }
-        .badge-outswing { background-color: rgba(230, 57, 70, 0.1); color: var(--outswing-color); }
-        .badge-legcutter { background-color: rgba(131, 56, 236, 0.1); color: var(--legcutter-color); }
+        .badge-length { background-color: rgba(42, 157, 143, 0.1); color: var(--length-color); }
+        .badge-lengthoff { background-color: rgba(67, 97, 238, 0.1); color: var(--lengthoff-color); }
+        .badge-wideyoker { background-color: rgba(231, 111, 81, 0.1); color: var(--wideyoker-color); }
+        .badge-yoker { background-color: rgba(244, 162, 97, 0.1); color: var(--yoker-color); }
     </style>
 </head>
 <body>
@@ -180,7 +188,7 @@
 <div class="container">
 
     <header>
-        <h1>Kekilla Fast Bowling</h1>
+        <h1>FAST BOWLING</h1>
     </header>
 
     <!-- Dashboard Range Filter -->
@@ -194,48 +202,38 @@
         </select>
     </div>
 
-    <!-- Visual Charts Grid (Displays 6 distinct charts) -->
+    <!-- Visual Charts Grid (Displays 4 specific charts) -->
     <div class="charts-grid">
         <div class="card">
-            <h2 class="straightline-title">Straight Line Accuracy (%)</h2>
-            <canvas id="straightlineChart"></canvas>
+            <h2 class="length-title">LENGTH Accuracy (%)</h2>
+            <canvas id="lengthChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="lengthspot-title">Length Spot Accuracy (%)</h2>
-            <canvas id="lengthspotChart"></canvas>
+            <h2 class="lengthoff-title">LENGTH OFF Accuracy (%)</h2>
+            <canvas id="lengthoffChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="yokerspot-title">Yoker Spot Accuracy (%)</h2>
-            <canvas id="yokerspotChart"></canvas>
+            <h2 class="wideyoker-title">WIDE YOKER Accuracy (%)</h2>
+            <canvas id="wideyokerChart"></canvas>
         </div>
         <div class="card">
-            <h2 class="wideyokerspot-title">Wide Yoker Spot Accuracy (%)</h2>
-            <canvas id="wideyokerspotChart"></canvas>
-        </div>
-        <div class="card">
-            <h2 class="outswing-title">Out Swing Accuracy (Y-L) (%)</h2>
-            <canvas id="outswingChart"></canvas>
-        </div>
-        <div class="card">
-            <h2 class="legcutter-title">Leg Cutter Accuracy (Y-L) (%)</h2>
-            <canvas id="legcutterChart"></canvas>
+            <h2 class="yoker-title">YOKER Accuracy (%)</h2>
+            <canvas id="yokerChart"></canvas>
         </div>
     </div>
 
     <!-- Data Log Table -->
     <div class="card">
-        <h2>FEET BY FEET S (100)</h2>
+        <h2 style="color: var(--primary-color);">FEET BY FEET S (100)</h2>
         <div class="table-container">
             <table id="dataTable">
                 <thead>
                     <tr>
                         <th>Session</th>
-                        <th>Straight Line</th>
-                        <th>Length Spot</th>
-                        <th>Yoker Spot</th>
-                        <th>Wide Yoker Spot</th>
-                        <th>Out Swing</th>
-                        <th>Leg Cutter</th>
+                        <th>LENGTH</th>
+                        <th>LENGTH OFF</th>
+                        <th>WIDE YOKER</th>
+                        <th>YOKER</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -250,19 +248,20 @@
     // =========================================================================
     // DATA ENTRY SECTION
     // Containing exactly 11 fully filled template sessions (Expandable to 100)
+    // Updated with the new 4 core variation keys: length, lengthoff, wideyoker, yoker
     // =========================================================================
     const bowlingData = [
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 1
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 2
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 3
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 4
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 5
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 6
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 7
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 8
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 9
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 },  // Session 10
-        { straightline: 0, lengthspot: 0, yokerspot: 0, wideyokerspot: 0, outswing: 0, legcutter: 0 }   // Session 11
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 1
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 2
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 3
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 4
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 5
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 6
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 7
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 8
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 9
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 },  // Session 10
+        { length: 0, lengthoff: 0, wideyoker: 0, yoker: 0 }   // Session 11
     ];
 
     // Chart references stored globally so we can update them on filter change
@@ -279,13 +278,11 @@
             const actualSessionNumber = bowlingData.length - index;
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>Session ${actualSessionNumber}</td>
-                <td><span class="badge badge-straightline">${row.straightline}%</span></td>
-                <td><span class="badge badge-lengthspot">${row.lengthspot}%</span></td>
-                <td><span class="badge badge-yokerspot">${row.yokerspot}%</span></td>
-                <td><span class="badge badge-wideyokerspot">${row.wideyokerspot}%</span></td>
-                <td><span class="badge badge-outswing">${row.outswing}%</span></td>
-                <td><span class="badge badge-legcutter">${row.legcutter}%</span></td>
+                <td><strong>Session ${actualSessionNumber}</strong></td>
+                <td><span class="badge badge-length">${row.length}%</span></td>
+                <td><span class="badge badge-lengthoff">${row.lengthoff}%</span></td>
+                <td><span class="badge badge-wideyoker">${row.wideyoker}%</span></td>
+                <td><span class="badge badge-yoker">${row.yoker}%</span></td>
             `;
             tableBody.appendChild(tr);
         });
@@ -309,20 +306,16 @@
             return `S${actualIndex}`;
         });
         
-        const straightlineData = visibleData.map(d => d.straightline);
-        const lengthspotData = visibleData.map(d => d.lengthspot);
-        const yokerspotData = visibleData.map(d => d.yokerspot);
-        const wideyokerspotData = visibleData.map(d => d.wideyokerspot);
-        const outswingData = visibleData.map(d => d.outswing);
-        const legcutterData = visibleData.map(d => d.legcutter);
+        const lengthData = visibleData.map(d => d.length);
+        const lengthoffData = visibleData.map(d => d.lengthoff);
+        const wideyokerData = visibleData.map(d => d.wideyoker);
+        const yokerData = visibleData.map(d => d.yoker);
 
-        // Render or Update the 6 charts in correct structured order
-        renderOrUpdateChart('straightlineChart', 'Straight Line', chartLabels, straightlineData, '#2a9d8f');
-        renderOrUpdateChart('lengthspotChart', 'Length Spot', chartLabels, lengthspotData, '#4361ee');
-        renderOrUpdateChart('yokerspotChart', 'Yoker Spot', chartLabels, yokerspotData, '#f4a261');
-        renderOrUpdateChart('wideyokerspotChart', 'Wide Yoker Spot', chartLabels, wideyokerspotData, '#e76f51');
-        renderOrUpdateChart('outswingChart', 'Out Swing', chartLabels, outswingData, '#e63946');
-        renderOrUpdateChart('legcutterChart', 'Leg Cutter', chartLabels, legcutterData, '#8338ec');
+        // Render or Update the 4 charts in correct structured order
+        renderOrUpdateChart('lengthChart', 'LENGTH', chartLabels, lengthData, '#2a9d8f');
+        renderOrUpdateChart('lengthoffChart', 'LENGTH OFF', chartLabels, lengthoffData, '#4361ee');
+        renderOrUpdateChart('wideyokerChart', 'WIDE YOKER', chartLabels, wideyokerData, '#e76f51');
+        renderOrUpdateChart('yokerChart', 'YOKER', chartLabels, yokerData, '#f4a261');
     }
 
     function renderOrUpdateChart(canvasId, label, labels, dataPoints, color) {
@@ -349,6 +342,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -368,9 +362,11 @@
         }
     }
 
-    // Initialize application
-    buildTable();
-    updateDashboard();
+    // Initialize application on load
+    window.onload = function() {
+        buildTable();
+        updateDashboard();
+    };
 </script>
 
 </body>
